@@ -1,2 +1,28 @@
-# huggingface-transformer-chatbot
-AI-powered chatbot application developed using Hugging Face Transformer models with a FastAPI backend and React frontend. Designed to demonstrate transformer-based conversational AI in a full-stack architecture.
+# Hugging Face Transformer Chatbot
+
+A full-stack AI chatbot built using Hugging Face Transformers, FastAPI, React, and Vite.
+
+## Tech Stack
+
+- React.js
+- Vite
+- FastAPI
+- Python
+- Hugging Face Transformers
+- DialoGPT
+
+## Features
+
+- AI-powered conversational chatbot
+- REST API with FastAPI
+- Modern React frontend
+- Transformer-based text generation
+- Clean and responsive UI
+
+## Run Locally
+
+### Backend
+
+```bash
+cd backend
+uvicorn main:app --reload
