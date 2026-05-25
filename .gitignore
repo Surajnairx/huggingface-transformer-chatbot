@@ -1,0 +1,55 @@
+# -----------------------
+# Python
+# -----------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual Environment
+.venv/
+venv/
+
+# Python Env Files
+.env
+
+# UV
+.python-version
+
+# Hugging Face Cache
+.cache/
+huggingface/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# -----------------------
+# Node / React / Vite
+# -----------------------
+node_modules/
+
+# Build folders
+dist/
+build/
+
+# Vite
+.vite/
+
+# Coverage
+coverage/
+
+# Env files
+frontend/.env
+backend/.env
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
