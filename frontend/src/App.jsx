@@ -44,6 +44,8 @@ function App() {
     setLoading(false);
   };
 
+  let disabled = loading;
+
   return (
     <div className="app">
       <h1>Hugging Face Transformer Chatbot</h1>
@@ -68,8 +70,13 @@ function App() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-
-        <button onClick={sendMessage}>Send</button>
+        <button
+          className={loading ? "disabled" : ""}
+          onClick={sendMessage}
+          disabled={loading}
+        >
+          {loading ? "Sending..." : "Send"}
+        </button>
       </div>
     </div>
   );
