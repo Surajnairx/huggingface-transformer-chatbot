@@ -1,45 +1,47 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-MODEL_NAME = "microsoft/DialoGPT-medium"
+MODEL_NAME = "google/flan-t5-base"
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-model = AutoModelForCausalLM.from_pretrained(MODEL_NAME)
 
-chat_history_ids = None
+model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
 
-def generate_response(user_message: str) -> str:
-    global chat_history_ids
 
-    new_input_ids = tokenizer.encode(
-        user_message + tokenizer.eos_token,
-        return_tensors="pt"
+def generate_answer(context, question):
+
+    short_context = context[:1500]
+
+    prompt = f"""
+You are an AI assistant.
+
+Answer the question clearly and briefly using ONLY the provided context.
+
+Context:
+{short_context}
+
+Question:
+{question}
+
+Answer:
+"""
+
+    inputs = tokenizer(
+        prompt,
+        return_tensors="pt",
+        truncation=True,
+        max_length=512
     )
 
-    if chat_history_ids is not None:
-        bot_input_ids = torch.cat(
-            [chat_history_ids, new_input_ids],
-            dim=-1
-        )
-    else:
-        bot_input_ids = new_input_ids
-
-    chat_history_ids = model.generate(
-        bot_input_ids,
-        max_length=1000,
-        pad_token_id=tokenizer.eos_token_id,
-        do_sample=True,
-        top_k=50,
-        top_p=0.92,
-        temperature=0.75
+    outputs = model.generate(
+        **inputs,
+        max_new_tokens=100,
+        temperature=0.3,
+        do_sample=False
     )
 
-    response = tokenizer.decode(
-        chat_history_ids[:, bot_input_ids.shape[-1]:][0],
+    answer = tokenizer.decode(
+        outputs[0],
         skip_special_tokens=True
     )
 
-    if not response.strip():
-        return "I'm not sure how to respond to that."
-
-    return response
+    return answer
