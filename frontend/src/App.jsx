@@ -39,10 +39,7 @@ function App() {
       const res = await axios.post(`${API}/upload-pdf`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      setChat((prev) => [
-        ...prev,
-        { sender: "bot", text: res.data.message },
-      ]);
+      setChat((prev) => [...prev, { sender: "bot", text: res.data.message }]);
       setFile(null);
       await fetchPdfs();
     } catch {
@@ -65,7 +62,12 @@ function App() {
       const { answer, similarity_scores, sources } = res.data;
       setChat((prev) => [
         ...prev,
-        { sender: "bot", text: answer, score: similarity_scores?.[0], source: sources?.[0] },
+        {
+          sender: "bot",
+          text: answer,
+          score: similarity_scores?.[0],
+          source: sources?.[0],
+        },
       ]);
     } catch {
       setChat((prev) => [
@@ -94,10 +96,12 @@ function App() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <aside className="w-[300px] border-r border-cyan-500/20 bg-[#0b161b] flex flex-col">
+        <aside className="w-75 border-r border-cyan-500/20 bg-[#0b161b] flex flex-col">
           {/* Upload section */}
           <div className="p-5 border-b border-cyan-500/20">
-            <h2 className="text-base font-semibold text-cyan-200 mb-3">Upload PDF</h2>
+            <h2 className="text-base font-semibold text-cyan-200 mb-3">
+              Upload PDF
+            </h2>
             <label className="border border-dashed border-cyan-500/40 rounded-xl p-5 text-center cursor-pointer hover:bg-cyan-500/5 transition flex flex-col items-center gap-2">
               <input
                 type="file"
@@ -122,7 +126,9 @@ function App() {
           {/* Indexed PDFs list */}
           <div className="flex-1 overflow-y-auto p-5">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-base font-semibold text-cyan-200">Indexed PDFs</h2>
+              <h2 className="text-base font-semibold text-cyan-200">
+                Indexed PDFs
+              </h2>
               <span className="text-xs bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded-full">
                 {pdfs.length}
               </span>
@@ -140,7 +146,9 @@ function App() {
                     className="flex items-center gap-3 bg-[#071014] border border-cyan-500/15 rounded-xl px-3 py-2.5"
                   >
                     <span className="text-lg shrink-0">📄</span>
-                    <span className="text-xs text-cyan-300 truncate">{name}</span>
+                    <span className="text-xs text-cyan-300 truncate">
+                      {name}
+                    </span>
                     <span className="ml-auto shrink-0 h-1.5 w-1.5 rounded-full bg-green-400" />
                   </li>
                 ))}
@@ -153,7 +161,9 @@ function App() {
             <p className="text-xs text-cyan-600">STATUS</p>
             <p className="mt-1 text-sm font-medium">
               {documentReady ? (
-                <span className="text-green-400">Ready — {pdfs.length} PDF{pdfs.length > 1 ? "s" : ""} loaded</span>
+                <span className="text-green-400">
+                  Ready — {pdfs.length} PDF{pdfs.length > 1 ? "s" : ""} loaded
+                </span>
               ) : (
                 <span className="text-yellow-400">Waiting for upload</span>
               )}
@@ -168,7 +178,9 @@ function App() {
               <div className="h-full flex items-center justify-center">
                 <div className="text-center">
                   <div className="text-7xl mb-5">🤖</div>
-                  <h2 className="text-2xl font-semibold text-cyan-200">AI Document Assistant</h2>
+                  <h2 className="text-2xl font-semibold text-cyan-200">
+                    AI Document Assistant
+                  </h2>
                   <p className="text-cyan-500 mt-2">
                     {documentReady
                       ? "Your PDFs are loaded. Ask anything."
@@ -179,7 +191,10 @@ function App() {
             )}
 
             {chat.map((msg, i) => (
-              <div key={i} className={`flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"}`}>
+              <div
+                key={i}
+                className={`flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"}`}
+              >
                 <div
                   className={`max-w-[75%] px-5 py-4 rounded-2xl leading-relaxed text-sm ${
                     msg.sender === "user"
@@ -191,7 +206,8 @@ function App() {
                 </div>
                 {msg.sender === "bot" && msg.source && (
                   <p className="text-[11px] text-cyan-700 mt-1 px-1">
-                    {msg.source} &nbsp;·&nbsp; similarity {(msg.score * 100).toFixed(1)}%
+                    {msg.source} &nbsp;·&nbsp; similarity{" "}
+                    {(msg.score * 100).toFixed(1)}%
                   </p>
                 )}
               </div>
@@ -210,10 +226,16 @@ function App() {
             <div className="flex gap-3">
               <input
                 type="text"
-                placeholder={documentReady ? "Ask questions from your PDFs..." : "Upload a PDF first..."}
+                placeholder={
+                  documentReady
+                    ? "Ask questions from your PDFs..."
+                    : "Upload a PDF first..."
+                }
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && !loading && sendMessage()}
+                onKeyDown={(e) =>
+                  e.key === "Enter" && !loading && sendMessage()
+                }
                 disabled={loading || !documentReady}
                 className="flex-1 bg-[#071014] border border-cyan-500/20 rounded-xl px-5 py-4 outline-none focus:border-cyan-400 text-cyan-100 placeholder:text-cyan-700 text-sm"
               />
