@@ -4,7 +4,7 @@ import chromadb
 import re
 
 EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"
-SIMILARITY_THRESHOLD = 0.35
+SIMILARITY_THRESHOLD = 0.4
 CHROMA_PATH = "./chroma_db"
 TOP_K = 3
 
