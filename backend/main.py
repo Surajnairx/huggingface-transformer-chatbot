@@ -130,31 +130,62 @@ async def upload_pdf(file: UploadFile = File(...)):
     }
 
 
+# @app.post("/ask-document")
+# async def ask_document(data: dict):
+#     question = data.get("question")
+#     results = search_similar_chunks(question)
+
+#     if not results:
+#         return {
+#             "answer": "I couldn't find relevant information about this in the uploaded documents. Please try rephrasing or ask something covered in the document.",
+#             "similarity_scores": [],
+#             "sources": [],
+#         }
+
+#     top_score = results[0]["similarity"]
+#     if top_score < 0.5:
+#         return {
+#             "answer": "Your question doesn't seem to be covered in the uploaded documents. Please ask something related to the document content.",
+#             "similarity_scores": [r["similarity"] for r in results],
+#             "sources": [],
+#         }
+
+#     answer_text = extract_answer_text(results[0]["chunk"])
+#     answer = generate_answer(answer_text, question)
+
+#     return {
+#         "answer": answer,
+#         "similarity_scores": [r["similarity"] for r in results],
+#         "sources": [r["pdf_name"] for r in results],
+#     }
+
+
 @app.post("/ask-document")
 async def ask_document(data: dict):
-    question = data.get("question")
-    results = search_similar_chunks(question)
+    question = data.get("question", "").strip()
 
-    if not results:
+    casual_reply = get_casual_response(question)
+    if casual_reply:
         return {
-            "answer": "I couldn't find relevant information about this in the uploaded documents. Please try rephrasing or ask something covered in the document.",
+            "answer": casual_reply,
             "similarity_scores": [],
             "sources": [],
         }
 
-    top_score = results[0]["similarity"]
-    if top_score < 0.5:
+    results = search_similar_chunks(question)
+
+    if not results:
         return {
-            "answer": "Your question doesn't seem to be covered in the uploaded documents. Please ask something related to the document content.",
-            "similarity_scores": [r["similarity"] for r in results],
+            "answer": "I don't have information about this in the uploaded documents.",
+            "similarity_scores": [],
             "sources": [],
         }
 
-    answer_text = extract_answer_text(results[0]["chunk"])
-    answer = generate_answer(answer_text, question)
+    context = "\n\n".join([r["chunk"] for r in results])
+
+    answer = generate_answer(context, question)
 
     return {
         "answer": answer,
-        "similarity_scores": [r["similarity"] for r in results],
-        "sources": [r["pdf_name"] for r in results],
+        "similarity_scores": [r["similarity"] for r in results], 
     }
